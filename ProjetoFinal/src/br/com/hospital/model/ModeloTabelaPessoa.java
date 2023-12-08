@@ -8,7 +8,7 @@ public class ModeloTabelaPessoa extends AbstractTableModel {
 
 	private static final String[] colunas = { "ID", "NOME", "CPF" };
 	private ArrayList<PessoaDTO> pessoas;
-	
+
 	public ModeloTabelaPessoa(ArrayList<PessoaDTO> pessoas) {
 		super();
 		this.pessoas = pessoas;
@@ -42,10 +42,10 @@ public class ModeloTabelaPessoa extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return colunas[column];
 	}
-	
+
 	public void atualizarDados(ArrayList<PessoaDTO> novasPessoas) {
-        this.pessoas = novasPessoas;
-        fireTableDataChanged(); // Notificar a tabela sobre a mudança nos dados
-    }
-	
+		this.pessoas = novasPessoas;
+		fireTableDataChanged();
+	}
+
 }

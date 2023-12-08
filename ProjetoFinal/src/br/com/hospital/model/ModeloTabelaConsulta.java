@@ -8,10 +8,10 @@ import br.com.hospital.dao.ConsultaDAO;
 
 public class ModeloTabelaConsulta extends AbstractTableModel {
 
-	private static final String[] colunas = { "ID", "PESSOA", "MEDICO", "DATA", "HORA"};
+	private static final String[] colunas = { "ID", "PESSOA", "MEDICO", "DATA", "HORA" };
 	private ArrayList<ConsultaDTO> consultas = new ArrayList<ConsultaDTO>();
 	private ConsultaDAO consultaDAO = new ConsultaDAO();
-	
+
 	public ModeloTabelaConsulta(ArrayList<ConsultaDTO> consultas) {
 		super();
 		this.consultas = consultas;
@@ -49,10 +49,10 @@ public class ModeloTabelaConsulta extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return colunas[column];
 	}
-	
+
 	public void atualizarDados(ArrayList<ConsultaDTO> novasConsultas) {
-        this.consultas = novasConsultas;
-        fireTableDataChanged(); // Notificar a tabela sobre a mudança nos dados
-    }
-	
+		this.consultas = novasConsultas;
+		fireTableDataChanged();
+	}
+
 }

@@ -9,7 +9,7 @@ public class PessoaDTO {
 	private String estadoPessoa;
 	private String numeroPessoa;
 	private String telefonePessoa;
-	
+
 	public PessoaDTO(int idPessoa, String nomePessoa, String cpfPessoa, String enderecoPessoa, String cidadePessoa,
 			String estadoPessoa, String numeroPessoa, String telefonePessoa) {
 		super();
@@ -24,9 +24,9 @@ public class PessoaDTO {
 	}
 
 	public PessoaDTO() {
-			
+
 	}
-	
+
 	public int getIdPessoa() {
 		return idPessoa;
 	}
@@ -90,6 +90,5 @@ public class PessoaDTO {
 	public void setTelefonePessoa(String telefonePessoa) {
 		this.telefonePessoa = telefonePessoa;
 	}
-	
-	
+
 }

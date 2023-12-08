@@ -1,14 +1,27 @@
 {
 	"folders": {},
 	"connections": {
-		"sqlite_jdbc-18c3ae42737-696e1a1f0151e23d": {
+		"sqlite_jdbc-18c43d3dcb7-4a17eb5be6d20ce1": {
+			"provider": "sqlite",
+			"driver": "sqlite_jdbc",
+			"name": "clinica.db",
+			"save-password": true,
+			"configuration": {
+				"database": "C:\\Users\\mathe\\OneDrive\\Área de Trabalho\\New folder\\Desktop\\Desktop\\src\\br\\com\\clinica\\dao\\clinica.db",
+				"url": "jdbc:sqlite:C:\\Users\\mathe\\OneDrive\\Área de Trabalho\\New folder\\Desktop\\Desktop\\src\\br\\com\\clinica\\dao\\clinica.db",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"auth-model": "native"
+			}
+		},
+		"sqlite_jdbc-18c44084059-9471c41290d8481": {
 			"provider": "sqlite",
 			"driver": "sqlite_jdbc",
 			"name": "hospital.db",
 			"save-password": true,
 			"configuration": {
-				"database": "C:\\Users\\mathe\\OneDrive\\Área de Trabalho\\New folder\\ProjetoFinal\\src\\br\\com\\hospital\\dao\\hospital.db",
-				"url": "jdbc:sqlite:C:\\Users\\mathe\\OneDrive\\Área de Trabalho\\New folder\\ProjetoFinal\\src\\br\\com\\hospital\\dao\\hospital.db",
+				"database": "C:\\Users\\mathe\\OneDrive\\Área de Trabalho\\New folder\\ProjetoFinal\\ProjetoFinal\\src\\br\\com\\hospital\\dao\\hospital.db",
+				"url": "jdbc:sqlite:C:\\Users\\mathe\\OneDrive\\Área de Trabalho\\New folder\\ProjetoFinal\\ProjetoFinal\\src\\br\\com\\hospital\\dao\\hospital.db",
 				"configurationType": "MANUAL",
 				"type": "dev",
 				"auth-model": "native"

@@ -2,39 +2,34 @@ package br.com.hospital.view;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.FlowLayout;
-import javax.swing.JTable;
-import java.awt.TextField;
-import java.util.ArrayList;
+import javax.swing.JButton;
 import java.awt.Label;
 import java.awt.Font;
-import java.awt.Choice;
-import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import br.com.hospital.ctr.GerarRelatorio;
 import br.com.hospital.dao.PessoaDAO;
 import br.com.hospital.model.ModeloTabelaPessoa;
 import br.com.hospital.model.PessoaDTO;
 
-import javax.swing.JScrollPane;
-import java.awt.List;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.SQLException;
-
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-
-public class FormPessoa extends JFrame {
-
-	private JFrame frame;
-	private JTable tablePessoas;
+public class FormPessoa extends JInternalFrame {
 	private ArrayList<PessoaDTO> pessoas = new ArrayList<PessoaDTO>();
 	private int controle_cadastro;
 	private JButton btnCadastrar;
@@ -43,6 +38,7 @@ public class FormPessoa extends JFrame {
 	private JButton btnSalvar;
 	private JButton btnCancelar;
 	private JButton btnRelatorio;
+	private JButton btnSair;
 	private TextField formnome;
 	private TextField formcpf;
 	private TextField formendereco;
@@ -51,15 +47,19 @@ public class FormPessoa extends JFrame {
 	private TextField formnumero;
 	private JComboBox formestado;
 	private ModeloTabelaPessoa modeloTabelaPessoa;
-
 	PessoaDAO pessoaDAO = new PessoaDAO();
+	private static final long serialVersionUID = 1L;
+	private JTable tablePessoas;
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FormPessoa window = new FormPessoa();
-					window.frame.setVisible(true);
+					FormPessoa frame = new FormPessoa();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -67,21 +67,17 @@ public class FormPessoa extends JFrame {
 		});
 	}
 
+	/**
+	 * Create the frame.
+	 */
 	public FormPessoa() {
-		initialize();
-	}
-
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 694, 385);
-		frame.setLocationRelativeTo(null); // Adicione esta linha
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		setBounds(100, 100, 641, 368);
+		getContentPane().setLayout(null);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(40, 11, 602, 311);
-		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
+		panel_1.setBounds(10, 11, 602, 311);
+		getContentPane().add(panel_1);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(28, 223, 266, 63);
@@ -89,26 +85,30 @@ public class FormPessoa extends JFrame {
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.setEnabled(true);
 		panel.add(btnCadastrar);
 
 		btnAlterar = new JButton("Alterar");
+		btnAlterar.setEnabled(false);
 		panel.add(btnAlterar);
 
 		btnRemover = new JButton("Remover");
+		btnRemover.setEnabled(false);
 		panel.add(btnRemover);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setEnabled(false);
 		panel.add(btnSalvar);
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setEnabled(false);
 		panel.add(btnCancelar);
 
+		btnSair = new JButton("Sair");
+		panel.add(btnSair);
+
 		btnRelatorio = new JButton("Gerar relatório");
-		btnRelatorio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(formcidade.getText());
-			}
-		});
+		btnRelatorio.setEnabled(true);
 		btnRelatorio.setBounds(380, 270, 126, 23);
 		panel_1.add(btnRelatorio);
 
@@ -182,12 +182,15 @@ public class FormPessoa extends JFrame {
 		panel_1.add(formestado);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(315, 75, 266, 184);
+		scrollPane.setBounds(304, 75, 288, 189);
 		panel_1.add(scrollPane);
 
 		modeloTabelaPessoa = new ModeloTabelaPessoa(pessoas);
 		attTabela();
 		tablePessoas = new JTable();
+		scrollPane.setViewportView(tablePessoas);
+		tablePessoas.setModel(modeloTabelaPessoa);
+		tablePessoas.getColumnModel().getColumn(0).setPreferredWidth(28);
 		tablePessoas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -199,19 +202,11 @@ public class FormPessoa extends JFrame {
 				botoes(false, true, true, false, true, false);
 			}
 		});
-		scrollPane.setViewportView(tablePessoas);
-		tablePessoas.setModel(modeloTabelaPessoa);
-
-		tablePessoas.getColumnModel().getColumn(0).setResizable(false);
-		tablePessoas.getColumnModel().getColumn(0).setPreferredWidth(36);
-		tablePessoas.getColumnModel().getColumn(1).setPreferredWidth(140);
-		tablePessoas.getColumnModel().getColumn(2).setPreferredWidth(130);
 
 		// Sistema iniciando
 		habilitarcampos(2);
 		botoes(true, false, false, false, false, true);
 
-		// Eventos
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controle_cadastro = 1;
@@ -272,11 +267,12 @@ public class FormPessoa extends JFrame {
 				try {
 					botoes(false, false, false, false, false, false);
 
-					int response = JOptionPane.showConfirmDialog(null, "Deseja Realmente Remover o Registro?", "Confirmar",
-							JOptionPane.YES_NO_OPTION);
+					int response = JOptionPane.showConfirmDialog(null, "Deseja Realmente Remover o Registro?",
+							"Confirmar", JOptionPane.YES_NO_OPTION);
 
 					if (response == JOptionPane.YES_OPTION) {
-						pessoaDAO.removerPessoa(Integer.parseInt(String.valueOf(tablePessoas.getValueAt(tablePessoas.getSelectedRow(),0))));
+						pessoaDAO.removerPessoa(Integer
+								.parseInt(String.valueOf(tablePessoas.getValueAt(tablePessoas.getSelectedRow(), 0))));
 						attTabela();
 					}
 					habilitarcampos(2);
@@ -284,6 +280,28 @@ public class FormPessoa extends JFrame {
 					limpacampos();
 				} catch (Exception er) {
 					System.out.println(er.getMessage());
+				}
+			}
+		});
+
+		btnSair.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Confirmação",
+						JOptionPane.YES_NO_OPTION);
+				if (resposta == JOptionPane.YES_OPTION)
+					dispose();
+			}
+		});
+
+		btnRelatorio.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				GerarRelatorio relatorio = new GerarRelatorio();
+				try {
+					relatorio.gerarRelatorioGeral("Pacientes");
+				} catch (Exception e1) {
+					System.out.println(e1.getMessage());
 				}
 			}
 		});

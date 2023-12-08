@@ -29,7 +29,6 @@ public class MedicoDAO {
 			stmt.setString(8, medico.getCrmMedico());
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -52,7 +51,6 @@ public class MedicoDAO {
 			stmt.setInt(9, id);
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -67,13 +65,12 @@ public class MedicoDAO {
 			stmt.setInt(1, id);
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public ArrayList<MedicoDTO> pequisarMedicoTabela() {
 		Connection c = Conexao.getInstancia().abrirConexao();
 		Statement stmt = null;
@@ -92,8 +89,9 @@ public class MedicoDAO {
 				medicoDTO.setIdMedico(rs.getInt("idMedico"));
 				medicoDTO.setCrmMedico(rs.getString("crmMedico"));
 
-				medicos.add(new MedicoDTO(medicoDTO.getIdMedico(), medicoDTO.getNomeMedico(),medicoDTO.getCpfMedico(), medicoDTO.getEnderecoMedico(), 
-						medicoDTO.getCidadeMedico(), medicoDTO.getNumeroMedico(), medicoDTO.getEstadoMedico(), medicoDTO.getTelefoneMedico(), medicoDTO.getCrmMedico()));
+				medicos.add(new MedicoDTO(medicoDTO.getIdMedico(), medicoDTO.getNomeMedico(), medicoDTO.getCpfMedico(),
+						medicoDTO.getEnderecoMedico(), medicoDTO.getCidadeMedico(), medicoDTO.getNumeroMedico(),
+						medicoDTO.getEstadoMedico(), medicoDTO.getTelefoneMedico(), medicoDTO.getCrmMedico()));
 			}
 			rs.close();
 			stmt.close();

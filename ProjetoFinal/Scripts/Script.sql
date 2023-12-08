@@ -21,6 +21,16 @@ CREATE TABLE Medico (
     crmMedico CHAR(15)
 );
 
+CREATE TABLE Login (
+    idLogin INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuarioLogin CHAR(100) NOT NULL UNIQUE, 
+    senhaLogin CHAR(100) NOT NULL,
+    nomeLogin CHAR(255),
+    cpfLogin CHAR(15),  
+    tipousuarioLogin CHAR(20), 
+    dtanascLogin CHAR(20)     
+);
+
 CREATE TABLE Consulta (
     idConsulta INTEGER PRIMARY KEY AUTOINCREMENT,
     dataConsulta CHAR(10),

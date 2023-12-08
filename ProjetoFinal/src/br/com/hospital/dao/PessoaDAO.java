@@ -29,7 +29,6 @@ public class PessoaDAO {
 			stmt.setString(7, pessoa.getNumeroPessoa());
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -51,7 +50,6 @@ public class PessoaDAO {
 			stmt.setInt(8, id);
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -66,13 +64,12 @@ public class PessoaDAO {
 			stmt.setInt(1, id);
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public ArrayList<PessoaDTO> pequisarPessoaTabela() {
 		Connection c = Conexao.getInstancia().abrirConexao();
 		Statement stmt = null;

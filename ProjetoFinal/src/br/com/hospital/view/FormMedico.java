@@ -1,42 +1,37 @@
 package br.com.hospital.view;
 
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.FlowLayout;
-import javax.swing.JTable;
-import java.awt.TextField;
-import java.util.ArrayList;
+import javax.swing.JButton;
 import java.awt.Label;
 import java.awt.Font;
-import java.awt.Choice;
-import java.awt.Panel;
-import javax.swing.table.DefaultTableModel;
-
-import br.com.hospital.dao.MedicoDAO;
-import br.com.hospital.model.ModeloTabelaMedico;
-import br.com.hospital.model.MedicoDTO;
-
-import javax.swing.JScrollPane;
-import java.awt.List;
-import java.awt.event.ActionListener;
+import java.awt.TextField;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+import br.com.hospital.ctr.GerarRelatorio;
+import br.com.hospital.dao.MedicoDAO;
+import br.com.hospital.model.MedicoDTO;
+import br.com.hospital.model.ModeloTabelaMedico;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
 
-public class FormMedico extends JFrame {
-
-	private JFrame frame;
-	private JTable tableMedicos;
+public class FormMedico extends JInternalFrame {
 	private ArrayList<MedicoDTO> medicos = new ArrayList<MedicoDTO>();
 	private int controle_cadastro;
 	private JButton btnCadastrar;
@@ -45,6 +40,7 @@ public class FormMedico extends JFrame {
 	private JButton btnSalvar;
 	private JButton btnCancelar;
 	private JButton btnRelatorio;
+	private JButton btnSair;
 	private TextField formnome;
 	private TextField formcpf;
 	private TextField formendereco;
@@ -54,15 +50,20 @@ public class FormMedico extends JFrame {
 	private TextField formcrm;
 	private JComboBox formestado;
 	private ModeloTabelaMedico modeloTabelaMedico;
+	private MedicoDAO medicoDAO = new MedicoDAO();
+	private static final long serialVersionUID = 1L;
+	private JTable tableMedicos;
+	private JScrollPane scrollPane;
 
-	MedicoDAO medicoDAO = new MedicoDAO();
-
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FormMedico window = new FormMedico();
-					window.frame.setVisible(true);
+					FormMedico frame = new FormMedico();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -70,21 +71,18 @@ public class FormMedico extends JFrame {
 		});
 	}
 
-	public FormMedico() {
-		initialize();
-	}
+	/**
+	 * Create the frame.
+	 */
 
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 694, 385);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+	public FormMedico() {
+		setBounds(100, 100, 631, 378);
+		getContentPane().setLayout(null);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(39, 11, 602, 324);
-		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
+		panel_1.setBounds(10, 11, 602, 324);
+		getContentPane().add(panel_1);
 
 		JPanel panel = new JPanel();
 		panel.setBounds(28, 250, 266, 63);
@@ -92,26 +90,30 @@ public class FormMedico extends JFrame {
 		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.setEnabled(true);
 		panel.add(btnCadastrar);
 
 		btnAlterar = new JButton("Alterar");
+		btnAlterar.setEnabled(false);
 		panel.add(btnAlterar);
 
 		btnRemover = new JButton("Remover");
+		btnRemover.setEnabled(false);
 		panel.add(btnRemover);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setEnabled(false);
 		panel.add(btnSalvar);
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setEnabled(false);
 		panel.add(btnCancelar);
 
+		btnSair = new JButton("Sair");
+		panel.add(btnSair);
+
 		btnRelatorio = new JButton("Gerar relatório");
-		btnRelatorio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println(formcidade.getText());
-			}
-		});
+		btnRelatorio.setEnabled(true);
 		btnRelatorio.setBounds(380, 290, 126, 23);
 		panel_1.add(btnRelatorio);
 
@@ -152,7 +154,7 @@ public class FormMedico extends JFrame {
 		label_8.setFont(new Font("Dialog", Font.BOLD, 16));
 		label_8.setBounds(364, 55, 172, 20);
 		panel_1.add(label_8);
-		
+
 		Label lblNewLabel = new Label("              CRM:");
 		lblNewLabel.setBounds(10, 114, 72, 14);
 		panel_1.add(lblNewLabel);
@@ -187,19 +189,21 @@ public class FormMedico extends JFrame {
 						"PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" }));
 		formestado.setBounds(88, 194, 65, 22);
 		panel_1.add(formestado);
-		
+
 		formcrm = new TextField();
+		formcrm.setColumns(10);
 		formcrm.setBounds(88, 111, 206, 20);
 		panel_1.add(formcrm);
-		formcrm.setColumns(10);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(315, 75, 266, 204);
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(301, 83, 291, 196);
 		panel_1.add(scrollPane);
 
 		modeloTabelaMedico = new ModeloTabelaMedico(medicos);
 		attTabela();
 		tableMedicos = new JTable();
+		scrollPane.setViewportView(tableMedicos);
+		tableMedicos.setModel(modeloTabelaMedico);
 		tableMedicos.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -211,9 +215,6 @@ public class FormMedico extends JFrame {
 				botoes(false, true, true, false, true, false);
 			}
 		});
-		scrollPane.setViewportView(tableMedicos);
-		tableMedicos.setModel(modeloTabelaMedico);
-		tableMedicos.getColumnModel().getColumn(0).setPreferredWidth(33);
 
 		// Sistema iniciando
 		habilitarcampos(2);
@@ -280,11 +281,12 @@ public class FormMedico extends JFrame {
 				try {
 					botoes(false, false, false, false, false, false);
 
-					int response = JOptionPane.showConfirmDialog(null, "Deseja Realmente Remover o Registro?", "Confirmar",
-							JOptionPane.YES_NO_OPTION);
+					int response = JOptionPane.showConfirmDialog(null, "Deseja Realmente Remover o Registro?",
+							"Confirmar", JOptionPane.YES_NO_OPTION);
 
 					if (response == JOptionPane.YES_OPTION) {
-						medicoDAO.removerMedico(Integer.parseInt(String.valueOf(tableMedicos.getValueAt(tableMedicos.getSelectedRow(),0))));
+						medicoDAO.removerMedico(Integer
+								.parseInt(String.valueOf(tableMedicos.getValueAt(tableMedicos.getSelectedRow(), 0))));
 						attTabela();
 					}
 					habilitarcampos(2);
@@ -292,6 +294,28 @@ public class FormMedico extends JFrame {
 					limpacampos();
 				} catch (Exception er) {
 					System.out.println(er.getMessage());
+				}
+			}
+		});
+
+		btnSair.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Confirmação",
+						JOptionPane.YES_NO_OPTION);
+				if (resposta == JOptionPane.YES_OPTION)
+					dispose();
+			}
+		});
+
+		btnRelatorio.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				GerarRelatorio relatorio = new GerarRelatorio();
+				try {
+					relatorio.gerarRelatorioGeral("Medicos");
+				} catch (Exception e1) {
+					System.out.println(e1.getMessage());
 				}
 			}
 		});

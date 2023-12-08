@@ -6,9 +6,9 @@ import javax.swing.table.AbstractTableModel;
 
 public class ModeloTabelaMedico extends AbstractTableModel {
 
-	private static final String[] colunas = { "ID", "NOME", "CRM", "CPF"};
+	private static final String[] colunas = { "ID", "NOME", "CRM", "CPF" };
 	private ArrayList<MedicoDTO> medicos;
-	
+
 	public ModeloTabelaMedico(ArrayList<MedicoDTO> medicos) {
 		super();
 		this.medicos = medicos;
@@ -44,10 +44,10 @@ public class ModeloTabelaMedico extends AbstractTableModel {
 		// TODO Auto-generated method stub
 		return colunas[column];
 	}
-	
+
 	public void atualizarDados(ArrayList<MedicoDTO> novosMedicos) {
-        this.medicos = novosMedicos;
-        fireTableDataChanged();
-    }
-	
+		this.medicos = novosMedicos;
+		fireTableDataChanged();
+	}
+
 }

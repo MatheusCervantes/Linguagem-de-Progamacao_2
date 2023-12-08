@@ -2,47 +2,55 @@ package br.com.hospital.view;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
-import javax.swing.JTextField;
-import javax.swing.JButton;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.awt.event.ActionEvent;
+
+import javax.swing.JTextPane;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import br.com.hospital.dao.*;
-import br.com.hospital.model.*;
-import javax.swing.JScrollPane;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import br.com.hospital.dao.ConsultaDAO;
+import br.com.hospital.dao.MedicoDAO;
+import br.com.hospital.dao.PessoaDAO;
+import br.com.hospital.model.ConsultaDTO;
+import br.com.hospital.model.MedicoDTO;
+import br.com.hospital.model.ModeloTabelaConsulta;
+import br.com.hospital.model.ModeloTabelaMedico;
+import br.com.hospital.model.ModeloTabelaPessoa;
+import br.com.hospital.model.PessoaDTO;
+import br.com.hospital.ctr.GerarRelatorio;
 
-public class FormConsulta {
-	private JFrame frame;
+public class FormConsulta extends JInternalFrame {
+	private static final long serialVersionUID = 1L;
 	private JTable tablePessoas;
 	private JTable tableMedicos;
-	private JLabel lblNewLabel_1;
-	private JLabel lblNewLabel_2;
+	private JTable tableConsultas;
 	private JTextField formdata;
 	private JTextField formhora;
-	private JTextPane formdescricao;
-	private JTable tableConsultas;
+	JTextPane formdescricao;
 	private JButton btnCadastrar;
 	private JButton btnAlterar;
 	private JButton btnRemover;
 	private JButton btnSalvar;
 	private JButton btnRelatorio;
 	private JButton btnCancelar;
+	private JButton btnSair;
 	private ArrayList<MedicoDTO> medicos = new ArrayList<MedicoDTO>();
 	private ArrayList<PessoaDTO> pessoas = new ArrayList<PessoaDTO>();
 	private ArrayList<ConsultaDTO> consultas = new ArrayList<ConsultaDTO>();
@@ -54,12 +62,15 @@ public class FormConsulta {
 	private MedicoDAO medicoDAO = new MedicoDAO();
 	private PessoaDAO pessoaDAO = new PessoaDAO();
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FormConsulta window = new FormConsulta();
-					window.frame.setVisible(true);
+					FormConsulta frame = new FormConsulta();
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -68,59 +79,51 @@ public class FormConsulta {
 	}
 
 	/**
-	 * Create the application.
+	 * Create the frame.
 	 */
 	public FormConsulta() {
-		initialize();
-	}
-
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 804, 657);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		setBounds(100, 100, 798, 648);
+		getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 765, 594);
-		frame.getContentPane().add(panel);
 		panel.setLayout(null);
+		panel.setBounds(10, 11, 765, 594);
+		getContentPane().add(panel);
 
 		JLabel lblNewLabel = new JLabel("Consulta");
-		lblNewLabel.setBounds(303, 5, 159, 44);
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 36));
+		lblNewLabel.setBounds(303, 5, 159, 44);
 		panel.add(lblNewLabel);
 
-		lblNewLabel_1 = new JLabel("Pessoas");
+		JLabel lblNewLabel_1 = new JLabel("Pessoas");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel_1.setBounds(140, 61, 67, 14);
 		panel.add(lblNewLabel_1);
 
-		lblNewLabel_2 = new JLabel("Médicos");
+		JLabel lblNewLabel_2 = new JLabel("Médicos");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 16));
 		lblNewLabel_2.setBounds(140, 333, 67, 14);
 		panel.add(lblNewLabel_2);
 
-		formdescricao = new JTextPane();
-		formdescricao.setBounds(462, 75, 273, 76);
-		panel.add(formdescricao);
-
 		formdata = new JTextField();
+		formdata.setText("");
+		formdata.setColumns(10);
 		formdata.setBounds(462, 162, 86, 20);
 		panel.add(formdata);
-		formdata.setColumns(10);
+
+		formdescricao = new JTextPane();
+		formdescricao.setBounds(462, 80, 273, 71);
+		panel.add(formdescricao);
 
 		JLabel lblNewLabel_3 = new JLabel("Data:");
 		lblNewLabel_3.setBounds(427, 165, 46, 14);
 		panel.add(lblNewLabel_3);
 
 		formhora = new JTextField();
+		formhora.setText("");
+		formhora.setColumns(10);
 		formhora.setBounds(649, 162, 86, 20);
 		panel.add(formhora);
-		formhora.setColumns(10);
 
 		JLabel lblNewLabel_4 = new JLabel("Hora:");
 		lblNewLabel_4.setBounds(616, 165, 33, 14);
@@ -132,63 +135,71 @@ public class FormConsulta {
 
 		JLabel lblNewLabel_6 = new JLabel("Consultas");
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel_6.setBounds(543, 236, 79, 14);
+		lblNewLabel_6.setBounds(538, 236, 79, 14);
 		panel.add(lblNewLabel_6);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(463, 483, 257, 100);
+		panel_1.setBounds(462, 483, 257, 100);
 		panel.add(panel_1);
 
 		btnCadastrar = new JButton("Cadastrar");
-		btnCadastrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		btnCadastrar.setEnabled(true);
 		panel_1.add(btnCadastrar);
 
 		btnAlterar = new JButton("Alterar");
+		btnAlterar.setEnabled(false);
 		panel_1.add(btnAlterar);
 
 		btnRemover = new JButton("Remover");
+		btnRemover.setEnabled(false);
 		panel_1.add(btnRemover);
 
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setEnabled(false);
 		panel_1.add(btnSalvar);
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setEnabled(false);
 		panel_1.add(btnCancelar);
 
+		btnSair = new JButton("Sair");
+		panel_1.add(btnSair);
+
 		btnRelatorio = new JButton("Gerar Relatório");
+		btnRelatorio.setEnabled(true);
 		panel_1.add(btnRelatorio);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(36, 75, 289, 230);
+		scrollPane.setBounds(10, 75, 322, 234);
 		panel.add(scrollPane);
 
 		tablePessoas = new JTable();
-		tablePessoas.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "NOME", "CPF" }));
-		tablePessoas.getColumnModel().getColumn(0).setPreferredWidth(30);
 		scrollPane.setViewportView(tablePessoas);
+		tablePessoas.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "NOME", "CPF" }));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(36, 349, 289, 234);
+		scrollPane_1.setBounds(10, 352, 322, 231);
 		panel.add(scrollPane_1);
 
 		tableMedicos = new JTable();
-		tableMedicos.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "NOME", "CRM", "CPF" }));
-		tableMedicos.getColumnModel().getColumn(0).setPreferredWidth(33);
 		scrollPane_1.setViewportView(tableMedicos);
+		tableMedicos.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "NOME", "CRM", "CPF" }));
 
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(446, 254, 289, 218);
+		scrollPane_2.setBounds(439, 253, 296, 212);
 		panel.add(scrollPane_2);
 
 		tableConsultas = new JTable();
-
 		scrollPane_2.setViewportView(tableConsultas);
+		tableConsultas.setModel(
+				new DefaultTableModel(new Object[][] {}, new String[] { "ID", "PESSOA", "MEDICO", "DATA", "HORA" }));
+		tableConsultas.getColumnModel().getColumn(0).setPreferredWidth(30);
+		tableMedicos.getColumnModel().getColumn(0).setPreferredWidth(28);
+		tablePessoas.getColumnModel().getColumn(0).setPreferredWidth(31);
 
 		modeloTabelaConsulta = new ModeloTabelaConsulta(consultas);
 		tableConsultas.setModel(modeloTabelaConsulta);
+
 		tableConsultas.getColumnModel().getColumn(0).setPreferredWidth(31);
 		tableConsultas.getColumnModel().getColumn(3).setPreferredWidth(64);
 
@@ -286,6 +297,28 @@ public class FormConsulta {
 			}
 		});
 
+		btnSair.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int resposta = JOptionPane.showConfirmDialog(null, "Deseja realmente sair?", "Confirmação",
+						JOptionPane.YES_NO_OPTION);
+				if (resposta == JOptionPane.YES_OPTION)
+					dispose();
+			}
+		});
+
+		btnRelatorio.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				GerarRelatorio relatorio = new GerarRelatorio();
+				try {
+					relatorio.gerarRelatorioGeral("Consultas");
+				} catch (Exception e1) {
+					System.out.println(e1.getMessage());
+				}
+			}
+		});
+
 		tableConsultas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -296,10 +329,10 @@ public class FormConsulta {
 				botoes(false, true, true, false, true, false);
 			}
 		});
+
 	}
 
 	private void limpacampos() {
-		formdescricao.setText("");
 		formdata.setText("");
 		formhora.setText("");
 	}
@@ -404,9 +437,9 @@ public class FormConsulta {
 
 	private void selecionarlinha(int idMedico, int idPessoa) {
 		int columnIndex = 0;
-		
+
 		int rowCountMedicos = tableMedicos.getRowCount();
-		
+
 		for (int rowIndex = 0; rowIndex < rowCountMedicos; rowIndex++) {
 			int valorCelula = Integer.parseInt(String.valueOf(tableMedicos.getValueAt(rowIndex, columnIndex)));
 
@@ -414,22 +447,22 @@ public class FormConsulta {
 				tableMedicos.setRowSelectionInterval(rowIndex, rowIndex);
 			}
 		}
-		
+
 		int rowCountPessoas = tablePessoas.getRowCount();
 
-        for (int rowIndex = 0; rowIndex < rowCountPessoas; rowIndex++) {
-            int valorCelula = Integer.parseInt(String.valueOf(tablePessoas.getValueAt(rowIndex, columnIndex)));
+		for (int rowIndex = 0; rowIndex < rowCountPessoas; rowIndex++) {
+			int valorCelula = Integer.parseInt(String.valueOf(tablePessoas.getValueAt(rowIndex, columnIndex)));
 
-            if (valorCelula == idPessoa) {
-                tablePessoas.setRowSelectionInterval(rowIndex, rowIndex);
-            }
-        }
+			if (valorCelula == idPessoa) {
+				tablePessoas.setRowSelectionInterval(rowIndex, rowIndex);
+			}
+		}
 	}
-	
+
 	private void alterar() {
 		ConsultaDTO aux = new ConsultaDTO();
-		aux = consultaDAO.pequisaConsulta(Integer
-				.parseInt(String.valueOf(tableConsultas.getValueAt(tableConsultas.getSelectedRow(), 0))));
+		aux = consultaDAO.pequisaConsulta(
+				Integer.parseInt(String.valueOf(tableConsultas.getValueAt(tableConsultas.getSelectedRow(), 0))));
 		preenchecampos(aux);
 		attTabelaMedico();
 		attTabelaPessoa();

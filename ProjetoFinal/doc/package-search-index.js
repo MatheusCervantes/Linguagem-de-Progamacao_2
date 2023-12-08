@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"br.com.hospital.ctr"},{"l":"br.com.hospital.dao"},{"l":"br.com.hospital.model"},{"l":"br.com.hospital.view"}];updateSearchResults();

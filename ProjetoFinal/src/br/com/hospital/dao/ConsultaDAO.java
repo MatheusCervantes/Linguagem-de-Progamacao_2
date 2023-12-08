@@ -15,7 +15,6 @@ import br.com.hospital.ctr.Conexao;
 import br.com.hospital.model.ConsultaDTO;
 import br.com.hospital.model.MedicoDTO;
 
-
 public class ConsultaDAO {
 	public void cadastrarConsulta(ConsultaDTO consultaDTO) throws SQLException {
 		try {
@@ -29,7 +28,6 @@ public class ConsultaDAO {
 			stmt.setString(5, consultaDTO.getDescricaoConsulta());
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -49,7 +47,6 @@ public class ConsultaDAO {
 			stmt.setInt(6, id);
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -64,29 +61,31 @@ public class ConsultaDAO {
 			stmt.setInt(1, id);
 			stmt.execute();
 			stmt.close();
-			c.commit();
 			c.close();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public ArrayList<ConsultaDTO> pequisarConsultaTabela() {
 		Connection c = Conexao.getInstancia().abrirConexao();
 		Statement stmt = null;
 		ArrayList<ConsultaDTO> consultas = new ArrayList<ConsultaDTO>();
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("select idConsulta, Consulta.idMedico, Consulta.idPessoa, dataConsulta, horaConsulta from Consulta join Medico on Medico.idMedico = Consulta.idMedico join Pessoa on Pessoa.idPessoa = Consulta.idPessoa");
+			ResultSet rs = stmt.executeQuery(
+					"select idConsulta, Consulta.idMedico, Consulta.idPessoa, dataConsulta, horaConsulta from Consulta join Medico on Medico.idMedico = Consulta.idMedico join Pessoa on Pessoa.idPessoa = Consulta.idPessoa");
 			while (rs.next()) {
 				ConsultaDTO consultaDTO = new ConsultaDTO();
-					consultaDTO.setIdConsulta(rs.getInt("idConsulta"));
-					consultaDTO.setIdMedico(rs.getInt("idMedico"));
-					consultaDTO.setIdPessoa(rs.getInt("idPessoa"));
-					consultaDTO.setDataConsulta(rs.getString("dataConsulta"));
-					consultaDTO.setHoraConsulta(rs.getString("horaConsulta"));
-				
-				consultas.add(new ConsultaDTO(consultaDTO.getIdConsulta(), consultaDTO.getIdMedico(), consultaDTO.getIdPessoa(), consultaDTO.getDataConsulta(), consultaDTO.getHoraConsulta(), consultaDTO.getDescricaoConsulta()));
+				consultaDTO.setIdConsulta(rs.getInt("idConsulta"));
+				consultaDTO.setIdMedico(rs.getInt("idMedico"));
+				consultaDTO.setIdPessoa(rs.getInt("idPessoa"));
+				consultaDTO.setDataConsulta(rs.getString("dataConsulta"));
+				consultaDTO.setHoraConsulta(rs.getString("horaConsulta"));
+
+				consultas.add(new ConsultaDTO(consultaDTO.getIdConsulta(), consultaDTO.getIdMedico(),
+						consultaDTO.getIdPessoa(), consultaDTO.getDataConsulta(), consultaDTO.getHoraConsulta(),
+						consultaDTO.getDescricaoConsulta()));
 			}
 			rs.close();
 			stmt.close();
@@ -107,7 +106,7 @@ public class ConsultaDAO {
 			consultaDTO.setIdMedico(rs.getInt("idMedico"));
 			consultaDTO.setIdPessoa(rs.getInt("idPessoa"));
 			consultaDTO.setDataConsulta(rs.getString("dataConsulta"));
-			consultaDTO.setHoraConsulta(rs.getString("horaConsulta")); 
+			consultaDTO.setHoraConsulta(rs.getString("horaConsulta"));
 			consultaDTO.setDescricaoConsulta(rs.getString("descricaoConsulta"));
 			consultaDTO.setIdConsulta(rs.getInt("idConsulta"));
 			rs.close();
@@ -118,17 +117,16 @@ public class ConsultaDAO {
 		}
 		return consultaDTO;
 	}
-	
+
 	public String pesquisaNomeMedicoConsulta(int id) {
 		Connection c = Conexao.getInstancia().abrirConexao();
 		Statement stmt = null;
-		String nomeMedico="";
+		String nomeMedico = "";
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("select nomeMedico from Medico m "
-					+ "join Consulta c on m.idMedico = c.idMedico  "
-					+ "join Pessoa p on p.idPessoa = c.idPessoa "
-					+ "where idConsulta = " + id);
+			ResultSet rs = stmt
+					.executeQuery("select nomeMedico from Medico m " + "join Consulta c on m.idMedico = c.idMedico  "
+							+ "join Pessoa p on p.idPessoa = c.idPessoa " + "where idConsulta = " + id);
 			nomeMedico = rs.getString("nomeMedico");
 			rs.close();
 			stmt.close();
@@ -138,17 +136,16 @@ public class ConsultaDAO {
 		}
 		return nomeMedico;
 	}
-	
+
 	public String pesquisaNomePessoaConsulta(int id) {
 		Connection c = Conexao.getInstancia().abrirConexao();
 		Statement stmt = null;
-		String nomePessoa="";
+		String nomePessoa = "";
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("select nomePessoa from Medico m "
-					+ "join Consulta c on m.idMedico = c.idMedico  "
-					+ "join Pessoa p on p.idPessoa = c.idPessoa "
-					+ "where idConsulta = " + id);
+			ResultSet rs = stmt
+					.executeQuery("select nomePessoa from Medico m " + "join Consulta c on m.idMedico = c.idMedico  "
+							+ "join Pessoa p on p.idPessoa = c.idPessoa " + "where idConsulta = " + id);
 			nomePessoa = rs.getString("nomePessoa");
 			rs.close();
 			stmt.close();

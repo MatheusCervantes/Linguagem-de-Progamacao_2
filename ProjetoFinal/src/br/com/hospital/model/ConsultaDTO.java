@@ -22,7 +22,7 @@ public class ConsultaDTO {
 	public ConsultaDTO() {
 
 	}
-	
+
 	public int getIdMedico() {
 		return idMedico;
 	}
@@ -70,5 +70,5 @@ public class ConsultaDTO {
 	public void setDescricaoConsulta(String descricaoConsulta) {
 		this.descricaoConsulta = descricaoConsulta;
 	}
-	
+
 }
